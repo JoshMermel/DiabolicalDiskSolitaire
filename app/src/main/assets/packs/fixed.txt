@@ -1,0 +1,5 @@
+Fixed
+fixed_r1
+fixed_r2
+fixed_h1
+fixed_h2

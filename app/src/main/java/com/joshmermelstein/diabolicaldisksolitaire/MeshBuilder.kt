@@ -1,0 +1,204 @@
+package com.joshmermelstein.diabolicaldisksolitaire
+
+import android.content.Context
+import android.util.Log
+import kotlin.math.sqrt
+
+// Helpers for building meshes of various kinds.
+
+// 0 1
+// 2 3
+// 4 5
+fun makeRectJBoard(
+    context: Context,
+    disks: List<String>,
+    numRows: Int,
+    numCols: Int,
+    winIdx: Int
+): JBoard {
+    val rows = buildList {
+        for (row in (0 until numRows)) {
+            add((row * numCols until (row + 1) * numCols).toList())
+        }
+        for (col in (0 until numCols)) {
+            add((col until (numRows * numCols) step numCols).toList())
+        }
+    }
+
+    // TODO(jmerm): this should come from the method args
+
+    val cheapBoard = CheapBoard(disks.map { makeCheapDisk(it) }.toMutableList(), rows, winIdx)
+
+    var cellBounds = buildList {
+        for (row in 0 until numRows) {
+            for (col in 0 until numCols) {
+                add(
+                    listOf(
+                        Pt(100f * col, 100f * row),
+                        Pt(100f * (col + 1), 100f * row),
+                        Pt(100f * (col + 1), 100f * (row + 1)),
+                        Pt(100f * col, 100f * (row + 1))
+                    ),
+                )
+            }
+        }
+    }
+
+
+    val sideLen = 100f
+    val metadata = mapOf(1 to sideLen * 0.32f, 2 to sideLen * 0.48f, 3 to sideLen * 0.64f)
+
+    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
+    return JBoard(cheapBoard, layoutParams)
+}
+
+fun makeHexJBoard(
+    context: Context,
+    disks: List<String>,
+    numRows: Int,
+    numCols: Int,
+    winIdx: Int
+): JBoard {
+    // TODO(jmerm): hex rows
+    val rows = buildList {
+        // diagonal down/right
+        for (row in (0 until numRows)) {
+            add((row * numCols until (row + 1) * numCols).toList())
+        }
+        // down
+        for (col in (0 until numCols)) {
+            add((col until (numRows * numCols) step numCols).toList())
+        }
+        // diagonal up/right from left bound
+        for (id in (0 until (numRows * numCols) step numCols)) {
+            var col = id % numCols
+            var row = (id - col) / numCols
+            while (col in (0 until numCols) && row in (0 until numRows)) {
+                row -= 1
+                col += 1
+            }
+            val dstIdx = (row * numCols) + col
+            add((id downTo dstIdx + 1 step (numCols - 1)).toList())
+        }
+        // diagonal up/right from bottom-left bound
+        for (id in ((numRows - 1) * numCols until (numRows * numCols))) {
+            var col = id % numCols
+            var row = (id - col) / numCols
+            while (col in (0 until numCols) && row in (0 until numRows)) {
+                row -= 1
+                col += 1
+            }
+            val dstIdx = (row * numCols) + col
+            add((id downTo dstIdx + 1 step (numCols - 1)).toList())
+        }
+    }.distinct()
+
+    Log.d("jmerm", "$rows")
+
+    val cheapBoard = CheapBoard(disks.map { makeCheapDisk(it) }.toMutableList(), rows, winIdx)
+
+    val hexWidth = 100f
+    val hexHeight = 50f * sqrt(3f)
+
+    var cellBounds = buildList {
+        for (row in 0 until numRows) {
+            val rowVOffset = hexHeight * 2 * row
+            for (col in 0 until numCols) {
+                val colVOffset = hexHeight * col
+                val colHOffset = 1.5f * hexWidth * col
+                add(
+                    listOf(
+                        Pt(colHOffset - hexWidth / 2, colVOffset + rowVOffset - hexHeight),
+                        Pt(colHOffset + hexWidth / 2, colVOffset + rowVOffset - hexHeight),
+                        Pt(colHOffset + hexWidth, colVOffset + rowVOffset),
+                        Pt(colHOffset + hexWidth / 2, colVOffset + rowVOffset + hexHeight),
+                        Pt(colHOffset - hexWidth / 2, colVOffset + rowVOffset + hexHeight),
+                        Pt(colHOffset - hexWidth, colVOffset + rowVOffset),
+                    ),
+                )
+            }
+        }
+    }
+
+    val metadata = mapOf(1 to 35f, 2 to 75f, 3 to 115f)
+    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
+    return JBoard(cheapBoard, layoutParams)
+}
+
+fun makePentJBoard(context: Context, disks: List<String>, winIdx: Int): JBoard {
+    val rows = listOf(
+        listOf(19, 9, 3, 0),
+        listOf(18, 8, 2, 1),
+        listOf(17, 7, 6, 12),
+        listOf(16, 15, 14, 13),
+        listOf(0, 1, 4, 10),
+        listOf(3, 2, 5, 11),
+        listOf(19, 18, 17, 16),
+        listOf(9, 8, 7, 15),
+        listOf(4, 5, 6, 14),
+        listOf(10, 11, 12, 13),
+    )
+
+    val points = arrayOf(
+        Pt(152.193f, 0f),
+        Pt(114.126f, 27.39f),
+        Pt(151.648f, 69.203f),
+        Pt(190.211f, 27.646f),
+        Pt(76.085f, 55.284f),
+        Pt(110.968f, 103.294f),
+        Pt(152.168f, 160.003f),
+        Pt(193.374f, 103.296f),
+        Pt(228.256f, 55.29f),
+        Pt(38.043f, 82.925f),
+        Pt(67.039f, 131.678f),
+        Pt(87.26f, 181.09f),
+        Pt(99.804f, 232.11f),
+        Pt(152.166f, 228.255f),
+        Pt(204.541f, 232.089f),
+        Pt(217.08f, 181.099f),
+        Pt(237.623f, 131.04f),
+        Pt(266.298f, 82.93f),
+        Pt(0f, 110.559f),
+        Pt(14.531f, 155.28f),
+        Pt(29.061f, 200.001f),
+        Pt(43.593f, 244.73f),
+        Pt(58.123f, 289.451f),
+        Pt(105.145f, 289.451f),
+        Pt(152.168f, 289.451f),
+        Pt(199.19f, 289.451f),
+        Pt(246.213f, 289.541f),
+        Pt(260.744f, 240.72f),
+        Pt(275.289f, 200.01f),
+        Pt(289.809f, 155.29f),
+        Pt(304.34f, 110.569f),
+    )
+
+    val cellBounds = listOf(
+        listOf(0, 3, 2, 1),
+        listOf(3, 8, 7, 2),
+        listOf(2, 7, 6, 5),
+        listOf(1, 2, 5, 4),
+        listOf(8, 17, 16, 7),
+        listOf(6, 7, 16, 15),
+        listOf(6, 15, 14, 13),
+        listOf(11, 6, 13, 12),
+        listOf(10, 5, 6, 11),
+        listOf(4, 5, 10, 9),
+        listOf(17, 30, 29, 16),
+        listOf(16, 29, 28, 15),
+        listOf(15, 28, 27, 14),
+        listOf(14, 27, 26, 25),
+        listOf(13, 14, 25, 24),
+        listOf(12, 13, 24, 23),
+        listOf(21, 12, 23, 22),
+        listOf(20, 11, 12, 21),
+        listOf(19, 10, 11, 20),
+        listOf(18, 9, 10, 19),
+    ).map { outline -> outline.map { points[it] } }
+
+    val cheapBoard = CheapBoard(disks.map { makeCheapDisk(it) }.toMutableList(), rows, winIdx)
+    val metadata = mapOf(1 to 10f, 3 to 36f)
+
+    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
+    return JBoard(cheapBoard, layoutParams)
+}

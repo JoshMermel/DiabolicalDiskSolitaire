@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/reset"
+        android:title="@string/gameplayDropdownResetLevel"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/toolbar_undo"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_undo_24"
+        android:title="@string/gameplayDropdownUndo"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/toolbar_redo"
+        android:icon="@drawable/ic_baseline_redo_24"
+        android:title="@string/gameplayDropdownRedo"
+        app:showAsAction="ifRoom" />
+</menu>

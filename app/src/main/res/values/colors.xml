@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Background colors of UI elements -->
+    <color name="legend_background">#F5F0F0</color>
+    <color name="gameplay_notif_bar">#DBDBDB</color>
+    <color name="gameplay_background">@color/white</color>
+    <color name="popup_background">@color/white</color>
+
+    <!-- Colors of disk -->
+    <color name="red_disk">#FF4242</color>
+    <color name="gray_disk">#A691AE</color>
+    <color name="blue_disk">#235FA4</color>
+    <color name="green_disk">#6FDE6E</color>
+    <color name="fixed_disk">@color/black</color>
+    <color name="gold_disk">#E8F086</color>
+
+    <!-- Colors of buttons on the main level select screen -->
+    <color name="incomplete_level">#ded7e0</color>
+    <color name="completed_level">#a1de95</color>
+</resources>

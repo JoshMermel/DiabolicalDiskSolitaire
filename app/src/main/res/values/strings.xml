@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">DiabolicalDiskSolitaire</string>
+    <!-- Strings used for fragments for navigation -->
+
+    <string name="gameplayDropdownRedo">Redo</string>
+    <string name="gameplayDropdownUndo">Undo</string>
+
+    <string name="levelSelectDropdownAbout">About</string>
+    <string name="levelSelectDropdownResetAll">Reset all levels</string>
+
+    <string name="gameplayDropdownResetLevel">Reset Level</string>
+</resources>
