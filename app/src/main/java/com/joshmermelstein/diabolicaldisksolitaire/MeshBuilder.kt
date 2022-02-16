@@ -2,6 +2,8 @@ package com.joshmermelstein.diabolicaldisksolitaire
 
 import android.content.Context
 import android.util.Log
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 // Helpers for building meshes of various kinds.
@@ -198,6 +200,37 @@ fun makePentJBoard(context: Context, disks: List<String>, winIdx: Int): JBoard {
 
     val cheapBoard = CheapBoard(disks.map { makeCheapDisk(it) }.toMutableList(), rows, winIdx)
     val metadata = mapOf(1 to 10f, 3 to 36f)
+
+    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
+    return JBoard(cheapBoard, layoutParams)
+}
+
+fun fromPolar(r: Double, theta: Double): Pt =
+    Pt((r * sin(theta)).toFloat(), (r * cos(theta)).toFloat())
+
+fun <T> Array<T>.rightCycle(d: Int): Array<T> {
+    val n = d % size
+    if (n == 0) return this
+    return sliceArray(size - n until size) + sliceArray(0 until size - n)
+}
+
+fun makeRingJBoard(context: Context, disks: List<String>, size: Int, winIdx: Int): JBoard {
+    val rows = List(size) { ((0 until size).toList().toTypedArray().rightCycle(it)).toList() }
+
+    val innerArc = 200 * Math.PI / size
+    val arcStep = 2 * Math.PI / size
+    val cellBounds = List(size) {
+        listOf(
+            fromPolar(100.0 - (innerArc / 2), Math.PI + (arcStep * (it + 0))),
+            fromPolar(100.0 + (innerArc / 2), Math.PI + (arcStep * (it + 0))),
+            fromPolar(100.0 + (innerArc / 2), Math.PI + (arcStep * (it + 1))),
+            fromPolar(100.0 - (innerArc / 2), Math.PI + (arcStep * (it + 1))),
+        )
+    }
+
+
+    val cheapBoard = CheapBoard(disks.map { makeCheapDisk(it) }.toMutableList(), rows, winIdx)
+    val metadata = mapOf(1 to 16f, 2 to 24f, 3 to 32f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
     return JBoard(cheapBoard, layoutParams)

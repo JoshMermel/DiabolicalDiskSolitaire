@@ -24,6 +24,7 @@ class MetadataSingleton private constructor(context: Context) {
             "pent",
             "rect",
             "hex",
+            "ring",
             "void",
             "fixed",
            // "experiments"

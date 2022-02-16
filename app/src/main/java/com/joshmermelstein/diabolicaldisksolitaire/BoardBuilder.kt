@@ -31,6 +31,13 @@ class PentGameplayParams(
     val winIdx : Int,
 ) : GameplayParams(id)
 
+class RingGameplayParams(
+    id: String,
+    val size: Int,
+    val board: List<String>,
+    val winIdx : Int,
+) : GameplayParams(id)
+
 fun loadInitialLevel(id: String, context: Context): GameplayParams? {
     val reader: BufferedReader
     try {
@@ -43,6 +50,7 @@ fun loadInitialLevel(id: String, context: Context): GameplayParams? {
             "RECT" -> loadInitialLevelRect(it, id)
             "HEX" -> loadInitialLevelHex(it, id)
             "PENT" -> loadInitialLevelPent(it, id)
+            "RING" -> loadInitialLevelRing(it, id)
             else -> return null
         }
     }
@@ -72,4 +80,11 @@ fun loadInitialLevelPent(reader: BufferedReader, id: String): PentGameplayParams
     val board = reader.readLine().split(",")
     val winIdx = reader.readLine().toInt()
     return PentGameplayParams(id, board, winIdx)
+}
+
+fun loadInitialLevelRing(reader: BufferedReader, id: String): RingGameplayParams? {
+    val size = reader.readLine().toInt()
+    val board = reader.readLine().split(",")
+    val winIdx = reader.readLine().toInt()
+    return RingGameplayParams(id, size, board, winIdx)
 }
