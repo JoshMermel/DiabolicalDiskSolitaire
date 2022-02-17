@@ -25,6 +25,7 @@ class GameManager(
         is HexGameplayParams -> makeHexJBoard(context, params.board, params.numRows, params.numCols, params.winIdx)
         is PentGameplayParams -> makePentJBoard(context, params.board, params.winIdx)
         is RingGameplayParams -> makeRingJBoard(context, params.board, params.size, params.winIdx)
+        is TriangleGameplayParams -> makeTriangleJBoard(context, params.board, params.winIdx)
     }
 
     private var undoStack = Stack<Move>()
@@ -139,6 +140,7 @@ class GameManager(
             is HexGameplayParams -> makeHexJBoard(context, params.board, params.numRows, params.numCols, params.winIdx)
             is PentGameplayParams -> makePentJBoard(context, params.board, params.winIdx)
             is RingGameplayParams -> makeRingJBoard(context, params.board, params.size, params.winIdx)
+            is TriangleGameplayParams -> makeTriangleJBoard(context, params.board, params.winIdx)
         }
         undoStack.clear()
         redoStack.clear()

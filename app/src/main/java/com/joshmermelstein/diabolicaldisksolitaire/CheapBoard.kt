@@ -227,7 +227,7 @@ class JCell(private val points: List<Pt>) {
             scaler.scaleY(virtualBottom) - padding
         )
         if (isWin) {
-            outline.paint.color = Color.YELLOW
+            outline.paint.color = Color.rgb(255, 231, 163)
         }
         outline.draw(canvas)
     }

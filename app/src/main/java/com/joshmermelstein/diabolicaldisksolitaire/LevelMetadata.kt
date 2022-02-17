@@ -27,6 +27,7 @@ class MetadataSingleton private constructor(context: Context) {
             "ring",
             "void",
             "fixed",
+            "triangle",
            // "experiments"
         )) {
             val reader =

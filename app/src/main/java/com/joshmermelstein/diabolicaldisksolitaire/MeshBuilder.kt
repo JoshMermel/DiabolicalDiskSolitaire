@@ -235,3 +235,57 @@ fun makeRingJBoard(context: Context, disks: List<String>, size: Int, winIdx: Int
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
     return JBoard(cheapBoard, layoutParams)
 }
+
+fun makeTriangleJBoard(context: Context, disks: List<String>, winIdx: Int): JBoard {
+    val rows = listOf(
+        listOf(0, 1, 4, 8),
+        listOf(3, 2, 5, 9),
+        listOf(0, 3, 7, 11),
+        listOf(1, 2, 6, 10),
+        listOf(4, 5, 6, 7),
+        listOf(8, 9, 10, 11),
+    )
+
+    val points = arrayOf(
+        Pt(166.301f, 0f),
+        Pt(229.598f, 46.786f),
+        Pt(166.299f, 85.167f),
+        Pt(103.448f, 46.977f),
+        Pt(288.021f, 121.728f),
+        Pt(227.161f, 156.863f),
+        Pt(166.3f, 191.998f),
+        Pt(105.438f, 156.863f),
+        Pt(44.576f, 121.726f),
+        Pt(323.218f, 210.155f),
+        Pt(258.819f, 245.416f),
+        Pt(166.3f, 262.276f),
+        Pt(73.779f, 245.414f),
+        Pt(9.442f, 210.198f),
+        Pt(332.577f, 288f),
+        Pt(260.467f, 318.943f),
+        Pt(166.3f, 332.554f),
+        Pt(72.125f, 318.892f),
+        Pt(0.023f, 288f),
+    )
+
+    val cellBounds = listOf(
+        listOf(0, 3, 2, 1),
+        listOf(1, 2, 5, 4),
+        listOf(2, 7, 6, 5),
+        listOf(3, 8, 7, 2),
+        listOf(5, 10, 9, 4),
+        listOf(6, 11, 10, 5),
+        listOf(6, 7, 12, 11),
+        listOf(8, 13, 12, 7),
+        listOf(10, 15, 14, 9),
+        listOf(11, 16, 15, 10),
+        listOf(12, 17, 16, 11),
+        listOf(13, 18, 17, 12),
+    ).map { outline -> outline.map { points[it] } }
+
+    val cheapBoard = CheapBoard(disks.map { makeCheapDisk(it) }.toMutableList(), rows, winIdx)
+    val metadata = mapOf(1 to 10f, 2 to 30f, 3 to 50f)
+
+    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
+    return JBoard(cheapBoard, layoutParams)
+}

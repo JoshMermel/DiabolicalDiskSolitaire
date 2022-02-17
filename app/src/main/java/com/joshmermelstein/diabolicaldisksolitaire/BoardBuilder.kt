@@ -38,6 +38,12 @@ class RingGameplayParams(
     val winIdx : Int,
 ) : GameplayParams(id)
 
+class TriangleGameplayParams(
+    id: String,
+    val board: List<String>,
+    val winIdx : Int,
+) : GameplayParams(id)
+
 fun loadInitialLevel(id: String, context: Context): GameplayParams? {
     val reader: BufferedReader
     try {
@@ -51,6 +57,7 @@ fun loadInitialLevel(id: String, context: Context): GameplayParams? {
             "HEX" -> loadInitialLevelHex(it, id)
             "PENT" -> loadInitialLevelPent(it, id)
             "RING" -> loadInitialLevelRing(it, id)
+            "TRIANGLE" -> loadInitialLevelTriangle(it, id)
             else -> return null
         }
     }
@@ -87,4 +94,9 @@ fun loadInitialLevelRing(reader: BufferedReader, id: String): RingGameplayParams
     val board = reader.readLine().split(",")
     val winIdx = reader.readLine().toInt()
     return RingGameplayParams(id, size, board, winIdx)
+}
+fun loadInitialLevelTriangle(reader: BufferedReader, id: String): TriangleGameplayParams? {
+    val board = reader.readLine().split(",")
+    val winIdx = reader.readLine().toInt()
+    return TriangleGameplayParams(id, board, winIdx)
 }
