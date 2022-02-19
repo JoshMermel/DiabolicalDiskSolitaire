@@ -1,15 +1,9 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
-// TODO(jmerm): break this up into many smaller files
 
-data class Pt(val x: Float, val y: Float)
-
-fun MutableList<CheapDisk>.swap(index1: Int, index2: Int) {
-    val tmp = this[index1]
-    this[index1] = this[index2]
-    this[index2] = tmp
-}
-
+// A BoardLogic represents the rules for what moves are possible, independent
+// of the current state of the board or the way it is drawn. This is key to
+// decoupling game logic and UI logic.
 // TODO(jmerm): consider adding a kind of "circular lane" logic handling
 class BoardLogic(lanes: List<List<Int>>) {
     private val numEntries: Int = 1 + lanes.maxOf { it.maxOrNull() ?: 0 }

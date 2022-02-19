@@ -7,6 +7,8 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.PathShape
 
+data class Pt(val x: Float, val y: Float)
+
 // Class that understands how to draw a board to a screen.
 // This lets us decouple gameplay logic from UI concerns.
 class BoardLayout(
