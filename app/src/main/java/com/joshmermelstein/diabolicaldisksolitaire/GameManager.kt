@@ -1,6 +1,7 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Canvas
 import android.view.View
 import android.widget.Button
@@ -116,9 +117,21 @@ class GameManager(
             reset()
             dialog.dismiss()
         }
-        // TODO(jmerm): make next button work.
+
         val next = dialog.findViewById<Button>(R.id.next)
-        next.visibility = View.GONE
+        val levelData: LevelMetadata =
+            MetadataSingleton.getInstance(context).getLevelData(params.id) ?: return
+        if (levelData.next == null) {
+            next.visibility = View.GONE
+        } else {
+            next.setOnClickListener {
+                val intent = Intent(context, GameplayActivity::class.java)
+                intent.putExtra("id", levelData.next)
+                dialog.dismiss()
+                context.startActivity(intent)
+                context.finish()
+            }
+        }
         dialog.show()
     }
 
