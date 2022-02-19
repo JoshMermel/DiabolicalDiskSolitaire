@@ -1,7 +1,5 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
-// TODO(jmerm): think about rays that wrap around the edge of rectangular boards?
-
 class MeshScaler(
     private val left: Float,
     private val top: Float,

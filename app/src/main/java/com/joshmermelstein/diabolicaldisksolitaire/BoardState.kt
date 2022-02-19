@@ -125,6 +125,8 @@ fun makeCheapDisk(spec: String): CheapDisk {
     return CheapDisk(size, isWin, isFixed, isVoid)
 }
 
+// TODO(jmerm): consider adding a kind of "circular lane" logic handling
+// TODO(jmerm): rename "rows" row "lanes".
 class BoardLogic(rows: List<List<Int>>) {
     private val numEntries: Int = 1 + rows.maxOf { it.maxOrNull() ?: 0 }
     private val rays = computeRays(rows)

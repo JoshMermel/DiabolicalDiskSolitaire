@@ -15,17 +15,11 @@ class GameManager(
 ) {
     // TODO(jmerm): should factory methods just take GameplayParams?
     var board = when (params) {
-        is RectGameplayParams -> makeRectJBoard(
-            context,
-            params.board,
-            params.numRows,
-            params.numCols,
-            params.winIdx
-        )
-        is HexGameplayParams -> makeHexJBoard(context, params.board, params.numRows, params.numCols, params.winIdx)
-        is PentGameplayParams -> makePentJBoard(context, params.board, params.winIdx)
-        is RingGameplayParams -> makeRingJBoard(context, params.board, params.size, params.winIdx)
-        is TriangleGameplayParams -> makeTriangleJBoard(context, params.board, params.winIdx)
+        is RectGameplayParams -> makeRectJBoard(context, params)
+        is HexGameplayParams -> makeHexJBoard(context, params)
+        is PentGameplayParams -> makePentJBoard(context, params)
+        is RingGameplayParams -> makeRingJBoard(context, params)
+        is TriangleGameplayParams -> makeTriangleJBoard(context, params)
     }
 
     private var undoStack = Stack<Move>()
@@ -130,17 +124,11 @@ class GameManager(
 
     fun reset() {
         board = when (params) {
-            is RectGameplayParams -> makeRectJBoard(
-                context,
-                params.board,
-                params.numRows,
-                params.numCols,
-                params.winIdx
-            )
-            is HexGameplayParams -> makeHexJBoard(context, params.board, params.numRows, params.numCols, params.winIdx)
-            is PentGameplayParams -> makePentJBoard(context, params.board, params.winIdx)
-            is RingGameplayParams -> makeRingJBoard(context, params.board, params.size, params.winIdx)
-            is TriangleGameplayParams -> makeTriangleJBoard(context, params.board, params.winIdx)
+            is RectGameplayParams -> makeRectJBoard(context, params)
+            is HexGameplayParams -> makeHexJBoard(context, params)
+            is PentGameplayParams -> makePentJBoard(context, params)
+            is RingGameplayParams -> makeRingJBoard(context, params)
+            is TriangleGameplayParams -> makeTriangleJBoard(context, params)
         }
         undoStack.clear()
         redoStack.clear()

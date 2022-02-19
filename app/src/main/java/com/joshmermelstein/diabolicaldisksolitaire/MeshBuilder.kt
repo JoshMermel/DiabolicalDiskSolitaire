@@ -1,7 +1,6 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
 import android.content.Context
-import android.util.Log
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -13,28 +12,23 @@ import kotlin.math.sqrt
 // 4 5
 fun makeRectJBoard(
     context: Context,
-    disks: List<String>,
-    numRows: Int,
-    numCols: Int,
-    winIdx: Int
+    params : RectGameplayParams
 ): JBoard {
     val rows = buildList {
-        for (row in (0 until numRows)) {
-            add((row * numCols until (row + 1) * numCols).toList())
+        for (row in (0 until params.numRows)) {
+            add((row * params.numCols until (row + 1) * params.numCols).toList())
         }
-        for (col in (0 until numCols)) {
-            add((col until (numRows * numCols) step numCols).toList())
+        for (col in (0 until params.numCols)) {
+            add((col until (params.numRows * params.numCols) step params.numCols).toList())
         }
     }
 
-    // TODO(jmerm): this should come from the method args
-
-    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardState = params.board.map { makeCheapDisk(it) }.toMutableList()
     val boardLogic = BoardLogic(rows)
 
     val cellBounds = buildList {
-        for (row in 0 until numRows) {
-            for (col in 0 until numCols) {
+        for (row in 0 until params.numRows) {
+            for (col in 0 until params.numCols) {
                 add(
                     listOf(
                         Pt(100f * col, 100f * row),
@@ -52,62 +46,57 @@ fun makeRectJBoard(
     val metadata = mapOf(1 to sideLen * 0.32f, 2 to sideLen * 0.48f, 3 to sideLen * 0.64f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, winIdx)
+    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
 }
 
+// TODO(jmerm): can this row/lane computation get factored out into some nice helpers?
 fun makeHexJBoard(
     context: Context,
-    disks: List<String>,
-    numRows: Int,
-    numCols: Int,
-    winIdx: Int
+    params: HexGameplayParams
 ): JBoard {
-    // TODO(jmerm): hex rows
     val rows = buildList {
         // diagonal down/right
-        for (row in (0 until numRows)) {
-            add((row * numCols until (row + 1) * numCols).toList())
+        for (row in (0 until params.numRows)) {
+            add((row * params.numCols until (row + 1) * params.numCols).toList())
         }
         // down
-        for (col in (0 until numCols)) {
-            add((col until (numRows * numCols) step numCols).toList())
+        for (col in (0 until params.numCols)) {
+            add((col until (params.numRows * params.numCols) step params.numCols).toList())
         }
         // diagonal up/right from left bound
-        for (id in (0 until (numRows * numCols) step numCols)) {
-            var col = id % numCols
-            var row = (id - col) / numCols
-            while (col in (0 until numCols) && row in (0 until numRows)) {
+        for (id in (0 until (params.numRows * params.numCols) step params.numCols)) {
+            var col = id % params.numCols
+            var row = (id - col) / params.numCols
+            while (col in (0 until params.numCols) && row in (0 until params.numRows)) {
                 row -= 1
                 col += 1
             }
-            val dstIdx = (row * numCols) + col
-            add((id downTo dstIdx + 1 step (numCols - 1)).toList())
+            val dstIdx = (row * params.numCols) + col
+            add((id downTo dstIdx + 1 step (params.numCols - 1)).toList())
         }
         // diagonal up/right from bottom-left bound
-        for (id in ((numRows - 1) * numCols until (numRows * numCols))) {
-            var col = id % numCols
-            var row = (id - col) / numCols
-            while (col in (0 until numCols) && row in (0 until numRows)) {
+        for (id in ((params.numRows - 1) * params.numCols until (params.numRows * params.numCols))) {
+            var col = id % params.numCols
+            var row = (id - col) / params.numCols
+            while (col in (0 until params.numCols) && row in (0 until params.numRows)) {
                 row -= 1
                 col += 1
             }
-            val dstIdx = (row * numCols) + col
-            add((id downTo dstIdx + 1 step (numCols - 1)).toList())
+            val dstIdx = (row * params.numCols) + col
+            add((id downTo dstIdx + 1 step (params.numCols - 1)).toList())
         }
     }.distinct()
 
-    Log.d("jmerm", "$rows")
-
-    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardState = params.board.map { makeCheapDisk(it) }.toMutableList()
     val boardLogic = BoardLogic(rows)
 
     val hexWidth = 100f
     val hexHeight = 50f * sqrt(3f)
 
     val cellBounds = buildList {
-        for (row in 0 until numRows) {
+        for (row in 0 until params.numRows) {
             val rowVOffset = hexHeight * 2 * row
-            for (col in 0 until numCols) {
+            for (col in 0 until params.numCols) {
                 val colVOffset = hexHeight * col
                 val colHOffset = 1.5f * hexWidth * col
                 add(
@@ -126,10 +115,10 @@ fun makeHexJBoard(
 
     val metadata = mapOf(1 to 35f, 2 to 75f, 3 to 115f)
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, winIdx)
+    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
 }
 
-fun makePentJBoard(context: Context, disks: List<String>, winIdx: Int): JBoard {
+fun makePentJBoard(context: Context, params : PentGameplayParams): JBoard {
     val rows = listOf(
         listOf(19, 9, 3, 0),
         listOf(18, 8, 2, 1),
@@ -200,12 +189,12 @@ fun makePentJBoard(context: Context, disks: List<String>, winIdx: Int): JBoard {
         listOf(18, 9, 10, 19),
     ).map { outline -> outline.map { points[it] } }
 
-    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardState = params.board.map { makeCheapDisk(it) }.toMutableList()
     val boardLogic = BoardLogic(rows)
     val metadata = mapOf(1 to 10f, 3 to 36f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, winIdx)
+    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
 }
 
 fun fromPolar(r: Double, theta: Double): Pt =
@@ -217,12 +206,12 @@ fun <T> Array<T>.rightCycle(d: Int): Array<T> {
     return sliceArray(size - n until size) + sliceArray(0 until size - n)
 }
 
-fun makeRingJBoard(context: Context, disks: List<String>, size: Int, winIdx: Int): JBoard {
-    val rows = List(size) { ((0 until size).toList().toTypedArray().rightCycle(it)).toList() }
+fun makeRingJBoard(context: Context, params: RingGameplayParams): JBoard {
+    val rows = List(params.size) { ((0 until params.size).toList().toTypedArray().rightCycle(it)).toList() }
 
-    val innerArc = 200 * Math.PI / size
-    val arcStep = 2 * Math.PI / size
-    val cellBounds = List(size) {
+    val innerArc = 200 * Math.PI / params.size
+    val arcStep = 2 * Math.PI / params.size
+    val cellBounds = List(params.size) {
         listOf(
             fromPolar(100.0 - (innerArc / 2), Math.PI + (arcStep * (it + 0))),
             fromPolar(100.0 + (innerArc / 2), Math.PI + (arcStep * (it + 0))),
@@ -232,15 +221,15 @@ fun makeRingJBoard(context: Context, disks: List<String>, size: Int, winIdx: Int
     }
 
 
-    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardState = params.board.map { makeCheapDisk(it) }.toMutableList()
     val boardLogic = BoardLogic(rows)
     val metadata = mapOf(1 to 16f, 2 to 24f, 3 to 32f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, winIdx)
+    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
 }
 
-fun makeTriangleJBoard(context: Context, disks: List<String>, winIdx: Int): JBoard {
+fun makeTriangleJBoard(context: Context, params : TriangleGameplayParams): JBoard {
     val rows = listOf(
         listOf(0, 1, 4, 8),
         listOf(3, 2, 5, 9),
@@ -287,10 +276,10 @@ fun makeTriangleJBoard(context: Context, disks: List<String>, winIdx: Int): JBoa
         listOf(13, 18, 17, 12),
     ).map { outline -> outline.map { points[it] } }
 
-    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardState = params.board.map { makeCheapDisk(it) }.toMutableList()
     val boardLogic = BoardLogic(rows)
     val metadata = mapOf(1 to 10f, 2 to 30f, 3 to 50f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, winIdx)
+    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
 }
