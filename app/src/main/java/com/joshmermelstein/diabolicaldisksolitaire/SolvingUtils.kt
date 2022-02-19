@@ -7,7 +7,12 @@ data class BfsNode(
     val path: List<Move>
 )
 
-fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic, winIdx : Int): Move? {
+fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic, winIdx : Int): List<Move> {
+    if (boardLogic.isSolved(initial, winIdx)) {
+        // TODO(jmerm): toast here?
+        return listOf()
+    }
+
     val seen = hashSetOf<List<CheapDisk>>()
     val q = LinkedList<BfsNode>()
 
@@ -23,7 +28,7 @@ fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic, winIdx : Int)
                 val candidate = next.entries.toMutableList()  // Makes a copy
                 candidate.swap(src, dst)
                 if (boardLogic.isSolved(candidate, winIdx)) {
-                    return next.path.firstOrNull() ?: Move(src, dst)
+                    return next.path + Move(src, dst)
                 }
                 if (!seen.contains(candidate)) {
                     seen.add(candidate)
@@ -33,5 +38,6 @@ fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic, winIdx : Int)
         }
     }
 
-    return null
+    // TODO(jmerm): toast here?
+    return listOf()
 }

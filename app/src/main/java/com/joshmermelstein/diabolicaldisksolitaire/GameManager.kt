@@ -63,12 +63,14 @@ class GameManager(
     }
 
     fun handleUpInput(absoluteX: Float, absoluteY: Float): Boolean {
-        board.handleUpInput(absoluteX, absoluteY)?.also {
-            undoStack.add(it)
-            numMoves++
-            updateButtons()
-        }
+        board.handleUpInput(absoluteX, absoluteY)?.also { handleMove(it) }
         return true
+    }
+
+    private fun handleMove(move: Move) {
+        undoStack.add(move)
+        numMoves++
+        updateButtons()
     }
 
     private fun updateButtons() {
@@ -149,7 +151,5 @@ class GameManager(
         complete = false
     }
 
-    // TODO(jmerm): help should write to the undo stack.
-    // TODO(jmerm): fix this when the board is already solved.
-    fun help() = board.help()
+    fun help() = board.help()?.let { handleMove(it) }
 }

@@ -91,11 +91,13 @@ class JBoard(
         }
     }
 
-    override fun help() {
+    override fun help() : Move? {
         val solution = solve(entries, boardLogic, winIdx)
-        if (solution != null) {
-            entries.swap(solution.src, solution.dst)
+        if (solution.isNotEmpty()) {
+            entries.swap(solution[0].src, solution[0].dst)
+            return solution[0]
         }
+        return null
     }
 
     override fun applyMove(move: Move) = entries.swap(move.src, move.dst)

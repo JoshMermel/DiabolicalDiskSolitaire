@@ -18,5 +18,5 @@ abstract class Board {
 
     abstract fun isSolved() : Boolean
 
-    abstract fun help()
+    abstract fun help() : Move?
 }
