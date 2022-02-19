@@ -6,6 +6,10 @@
         android:title="@string/gameplayDropdownResetLevel"
         app:showAsAction="never" />
     <item
+        android:id="@+id/help"
+        android:title="Help!"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/toolbar_undo"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_undo_24"

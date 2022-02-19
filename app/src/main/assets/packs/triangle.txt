@@ -3,3 +3,9 @@ tri1
 tri2
 tri3
 tri4
+tri5
+tri6
+tri7
+tri8
+tri9
+tri10

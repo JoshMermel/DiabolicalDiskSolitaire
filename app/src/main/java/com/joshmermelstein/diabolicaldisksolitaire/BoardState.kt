@@ -8,11 +8,13 @@ import android.graphics.Path
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.PathShape
+import android.util.Log
 
 data class Pt(val x: Float, val y: Float)
 
 class JBoard(
-    private val cheapBoard: CheapBoard,
+    private val boardState: BoardState,
+    private val boardLogic: BoardLogic,
     private val layoutParams: CheapBoardLayoutParams,
 ) :
     Board() {
@@ -36,8 +38,8 @@ class JBoard(
                 bounds
             )
         }
-        layoutParams.drawCells(scaler, canvas, cheapBoard)
-        layoutParams.drawDisks(scaler, canvas, cheapBoard)
+        layoutParams.drawCells(scaler, canvas, boardState)
+        layoutParams.drawDisks(scaler, canvas, boardState)
     }
 
     // (height/width) of what sort of rectangle should hold the board.
@@ -46,7 +48,7 @@ class JBoard(
 
     override fun handleDownInput(absoluteX: Float, absoluteY: Float) {
         val touchedCell = layoutParams.getTouchedCell(scaler, absoluteX, absoluteY) ?: return
-        val disk = cheapBoard.getDisk(touchedCell)
+        val disk = boardState.getDisk(touchedCell)
         if (disk == null || disk.size == 0 || disk.isFixed || disk.isVoid) {
             return
         }
@@ -64,22 +66,32 @@ class JBoard(
         val srcIdx: Int = layoutParams.heldDiskIdx ?: return null
         val dstIdx = layoutParams.getTouchedCell(scaler, absoluteX, absoluteY)
 
-        return if (dstIdx == null || !cheapBoard.getValidDestinations(srcIdx).contains(dstIdx)) {
+        return if (dstIdx == null || !boardLogic.getValidDestinations(boardState.entries, srcIdx)
+                .contains(dstIdx)
+        ) {
             layoutParams.snapBack()
             null
         } else {
-            cheapBoard.swap(srcIdx, dstIdx)
+            boardState.swap(srcIdx, dstIdx)
             layoutParams.snapBack()
             Move(srcIdx, dstIdx)
         }
     }
 
-    override fun applyMove(move: Move) = cheapBoard.swap(move.src, move.dst)
-    override fun isSolved(): Boolean = cheapBoard.isSolved()
+    override fun help() {
+        Log.d("jmerm", "Starting search :)")
+        val solution = solve(boardState.entries, boardLogic)
+        if (solution != null) {
+            boardState.swap(solution.src, solution.dst)
+        }
+    }
+
+    override fun applyMove(move: Move) = boardState.swap(move.src, move.dst)
+    override fun isSolved(): Boolean = boardLogic.isSolved(boardState.entries)
 }
 
 
-class CheapDisk(
+data class CheapDisk(
     val size: Int,
     val isWin: Boolean = false,
     val isFixed: Boolean = false,
@@ -109,16 +121,11 @@ fun makeCheapDisk(spec: String): CheapDisk {
     return CheapDisk(size, isWin, isFixed, isVoid)
 }
 
-// A CheapBoard manages the gameplay logic of a board but does not know how to draw itself.
-// It is intentionally cheap to copy/update.
-class CheapBoard(
-    private var entries: MutableList<CheapDisk>,
-    rows: List<List<Int>>,
-    val winIdx: Int
-) {
+class BoardLogic(rows: List<List<Int>>, private val winIdx : Int) {
+    private val numEntries: Int = 1 + rows.maxOf { it.maxOrNull() ?: 0 }
     private val rays = computeRays(rows)
     private fun computeRays(rows: List<List<Int>>): List<List<List<Int>>> {
-        val ret = MutableList<MutableList<List<Int>>>(entries.size) { mutableListOf() }
+        val ret = MutableList<MutableList<List<Int>>>(numEntries) { mutableListOf() }
         for (row in rows) {
             for (i in row.indices) {
                 val tmp = row.slice((i + 1 until row.size))
@@ -134,18 +141,18 @@ class CheapBoard(
         return ret
     }
 
-    fun getDisk(idx: Int): CheapDisk? = entries.getOrNull(idx)
-    fun getValidDestinations(idx: Int): List<Int> =
-        rays[idx].mapNotNull { getDestinationAlongRay(idx, it) }
-
-    private fun getDestinationAlongRay(idx: Int, ray: List<Int>): Int? {
+    private fun getDestinationAlongRay(entries: List<CheapDisk>, idx: Int, ray: List<Int>): Int? {
+        if (entries[idx].size == 0 || entries[idx].isVoid || entries[idx].isFixed) {
+            // nothing to move
+            return null
+        }
         if (ray.isEmpty() || entries[ray[0]].size == 0 || entries[ray[0]].isVoid) {
             // nothing to jump over!
             return null
         }
         for (dst in ray.drop(1)) {
             if (entries[dst].size == 0) {
-                return if (isValidDest(dst, entries[idx]) && !entries[dst].isVoid) {
+                return if (isValidDest(entries, dst, entries[idx]) && !entries[dst].isVoid) {
                     dst
                 } else {
                     null
@@ -155,18 +162,31 @@ class CheapBoard(
         return null
     }
 
-    private fun isValidDest(idx: Int, disk: CheapDisk): Boolean {
+    private fun isValidDest(entries: List<CheapDisk>, idx: Int, disk: CheapDisk): Boolean {
         val maxSize = 4 - disk.size
         return rays[idx].map { entries[it[0]].size <= maxSize }.all { it }
     }
+
+    fun getValidDestinations(entries: List<CheapDisk>, idx: Int): List<Int> =
+        rays[idx].mapNotNull { getDestinationAlongRay(entries, idx, it) }
+
+    fun isSolved(entries: List<CheapDisk>): Boolean = entries[winIdx].isWin
+}
+
+// A CheapBoard manages the gameplay logic of a board but does not know how to draw itself.
+// It is intentionally cheap to copy/update.
+class BoardState(
+    var entries: MutableList<CheapDisk>,
+    val winIdx: Int
+) {
+
+    fun getDisk(idx: Int): CheapDisk? = entries.getOrNull(idx)
 
     fun swap(srcIdx: Int, dstIdx: Int) {
         val tmp = entries[srcIdx]
         entries[srcIdx] = entries[dstIdx]
         entries[dstIdx] = tmp
     }
-
-    fun isSolved(): Boolean = entries[winIdx].isWin
 }
 
 class JCell(private val points: List<Pt>) {
@@ -263,18 +283,18 @@ class CheapBoardLayoutParams(
         return null
     }
 
-    fun drawCells(scaler: MeshScaler, canvas: Canvas, cheapBoard: CheapBoard) {
+    fun drawCells(scaler: MeshScaler, canvas: Canvas, boardState: BoardState) {
         for (i in cells.indices) {
-            val disk = cheapBoard.getDisk(i)
+            val disk = boardState.getDisk(i)
             if (disk != null && !disk.isVoid) {
-                cells[i].drawSelf(scaler, canvas, i == cheapBoard.winIdx)
+                cells[i].drawSelf(scaler, canvas, i == boardState.winIdx)
             }
         }
     }
 
-    fun drawDisks(scaler: MeshScaler, canvas: Canvas, cheapBoard: CheapBoard) {
+    fun drawDisks(scaler: MeshScaler, canvas: Canvas, boardState: BoardState) {
         for (i in cells.indices) {
-            val disk = cheapBoard.getDisk(i)
+            val disk = boardState.getDisk(i)
             if (disk == null || disk.isVoid) {
                 continue
             }

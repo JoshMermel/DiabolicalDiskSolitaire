@@ -147,4 +147,6 @@ class GameManager(
         updateButtons()
         complete = false
     }
+
+    fun help() = board.help()
 }

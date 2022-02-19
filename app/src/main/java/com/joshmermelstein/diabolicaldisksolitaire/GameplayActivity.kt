@@ -64,6 +64,10 @@ class GameplayActivity : AppCompatActivity() {
                 gameManager.reset()
                 true
             }
+            R.id.help -> {
+                gameManager.help()
+                true
+            }
             R.id.toolbar_undo -> {
                 gameManager.undoMove()
                 true

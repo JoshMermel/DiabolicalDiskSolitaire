@@ -17,4 +17,6 @@ abstract class Board {
     abstract fun applyMove(move : Move)
 
     abstract fun isSolved() : Boolean
+
+    abstract fun help()
 }
