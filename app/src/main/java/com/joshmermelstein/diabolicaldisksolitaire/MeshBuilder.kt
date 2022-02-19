@@ -29,8 +29,8 @@ fun makeRectJBoard(
 
     // TODO(jmerm): this should come from the method args
 
-    val boardState = BoardState(disks.map { makeCheapDisk(it) }.toMutableList(), winIdx)
-    val boardLogic = BoardLogic(rows, winIdx)
+    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardLogic = BoardLogic(rows)
 
     val cellBounds = buildList {
         for (row in 0 until numRows) {
@@ -52,7 +52,7 @@ fun makeRectJBoard(
     val metadata = mapOf(1 to sideLen * 0.32f, 2 to sideLen * 0.48f, 3 to sideLen * 0.64f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams)
+    return JBoard(boardState, boardLogic, layoutParams, winIdx)
 }
 
 fun makeHexJBoard(
@@ -98,8 +98,8 @@ fun makeHexJBoard(
 
     Log.d("jmerm", "$rows")
 
-    val boardState = BoardState(disks.map { makeCheapDisk(it) }.toMutableList(), winIdx)
-    val boardLogic = BoardLogic(rows, winIdx)
+    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardLogic = BoardLogic(rows)
 
     val hexWidth = 100f
     val hexHeight = 50f * sqrt(3f)
@@ -126,7 +126,7 @@ fun makeHexJBoard(
 
     val metadata = mapOf(1 to 35f, 2 to 75f, 3 to 115f)
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams)
+    return JBoard(boardState, boardLogic, layoutParams, winIdx)
 }
 
 fun makePentJBoard(context: Context, disks: List<String>, winIdx: Int): JBoard {
@@ -200,12 +200,12 @@ fun makePentJBoard(context: Context, disks: List<String>, winIdx: Int): JBoard {
         listOf(18, 9, 10, 19),
     ).map { outline -> outline.map { points[it] } }
 
-    val boardState = BoardState(disks.map { makeCheapDisk(it) }.toMutableList(), winIdx)
-    val boardLogic = BoardLogic(rows, winIdx)
+    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardLogic = BoardLogic(rows)
     val metadata = mapOf(1 to 10f, 3 to 36f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams)
+    return JBoard(boardState, boardLogic, layoutParams, winIdx)
 }
 
 fun fromPolar(r: Double, theta: Double): Pt =
@@ -232,12 +232,12 @@ fun makeRingJBoard(context: Context, disks: List<String>, size: Int, winIdx: Int
     }
 
 
-    val boardState = BoardState(disks.map { makeCheapDisk(it) }.toMutableList(), winIdx)
-    val boardLogic = BoardLogic(rows, winIdx)
+    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardLogic = BoardLogic(rows)
     val metadata = mapOf(1 to 16f, 2 to 24f, 3 to 32f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams)
+    return JBoard(boardState, boardLogic, layoutParams, winIdx)
 }
 
 fun makeTriangleJBoard(context: Context, disks: List<String>, winIdx: Int): JBoard {
@@ -287,10 +287,10 @@ fun makeTriangleJBoard(context: Context, disks: List<String>, winIdx: Int): JBoa
         listOf(13, 18, 17, 12),
     ).map { outline -> outline.map { points[it] } }
 
-    val boardState = BoardState(disks.map { makeCheapDisk(it) }.toMutableList(), winIdx)
-    val boardLogic = BoardLogic(rows, winIdx)
+    val boardState = disks.map { makeCheapDisk(it) }.toMutableList()
+    val boardLogic = BoardLogic(rows)
     val metadata = mapOf(1 to 10f, 2 to 30f, 3 to 50f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams)
+    return JBoard(boardState, boardLogic, layoutParams, winIdx)
 }

@@ -1,6 +1,5 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
-import android.util.Log
 import java.util.*
 
 data class BfsNode(
@@ -8,7 +7,7 @@ data class BfsNode(
     val path: List<Move>
 )
 
-fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic): Move? {
+fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic, winIdx : Int): Move? {
     val seen = hashSetOf<List<CheapDisk>>()
     val q = LinkedList<BfsNode>()
 
@@ -33,8 +32,7 @@ fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic): Move? {
                 val tmp = candidate[i]
                 candidate[i] = candidate[dest]
                 candidate[dest] = tmp
-                if (boardLogic.isSolved(candidate)) {
-                    Log.d("jmerm", "${q.size}, ${seen.size}")
+                if (boardLogic.isSolved(candidate, winIdx)) {
                     return next.path.firstOrNull() ?: Move(i, dest)
                 }
                 if (!seen.contains(candidate)) {
