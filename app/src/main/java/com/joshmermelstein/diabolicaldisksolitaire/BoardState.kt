@@ -1,6 +1,5 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
-// TODO(jmerm): figure out why the meshscaler needs to be lateinit. Can that be fixed?
 // TODO(jmerm): break this up into many smaller files
 
 import android.graphics.Canvas
@@ -22,86 +21,6 @@ fun MutableList<CheapDisk>.swap(index1: Int, index2: Int) {
     val tmp = this[index1]
     this[index1] = this[index2]
     this[index2] = tmp
-}
-
-class JBoard(
-    private val entries : MutableList<CheapDisk>,
-    private val boardLogic: BoardLogic,
-    private val layoutParams: CheapBoardLayoutParams,
-    private val winIdx : Int
-) :
-    Board() {
-
-    private lateinit var scaler: MeshScaler
-    override fun updateBounds(bounds: Bounds) {
-        scaler = MeshScaler(
-            layoutParams.virtualLeft,
-            layoutParams.virtualTop,
-            layoutParams.virtualBottom,
-            bounds
-        )
-    }
-
-    override fun drawSelf(canvas: Canvas, bounds: Bounds) {
-        if (!::scaler.isInitialized) {
-            scaler = MeshScaler(
-                layoutParams.virtualLeft,
-                layoutParams.virtualTop,
-                layoutParams.virtualBottom,
-                bounds
-            )
-        }
-        layoutParams.drawCells(scaler, canvas, entries, winIdx)
-        layoutParams.drawDisks(scaler, canvas, entries)
-    }
-
-    // (height/width) of what sort of rectangle should hold the board.
-    override val virtualWidth = layoutParams.virtualWidth
-    override val virtualHeight = layoutParams.virtualHeight
-
-    override fun handleDownInput(absoluteX: Float, absoluteY: Float) {
-        val touchedCell = layoutParams.getTouchedCell(scaler, absoluteX, absoluteY) ?: return
-        val disk = entries[touchedCell]
-        if (disk.size == 0 || disk.isFixed || disk.isVoid) {
-            return
-        }
-        layoutParams.heldDiskIdx = touchedCell
-        layoutParams.heldDiskPos = Pt(absoluteX, absoluteY)
-    }
-
-    override fun handleMoveInput(absoluteX: Float, absoluteY: Float) {
-        if (layoutParams.heldDiskIdx != null) {
-            layoutParams.heldDiskPos = Pt(absoluteX, absoluteY)
-        }
-    }
-
-    override fun handleUpInput(absoluteX: Float, absoluteY: Float): Move? {
-        val srcIdx: Int = layoutParams.heldDiskIdx ?: return null
-        val dstIdx = layoutParams.getTouchedCell(scaler, absoluteX, absoluteY)
-
-        return if (dstIdx == null || !boardLogic.getValidDestinations(entries, srcIdx)
-                .contains(dstIdx)
-        ) {
-            layoutParams.snapBack()
-            null
-        } else {
-            entries.swap(srcIdx, dstIdx)
-            layoutParams.snapBack()
-            Move(srcIdx, dstIdx)
-        }
-    }
-
-    override fun help() : Move? {
-        val solution = solve(entries, boardLogic, winIdx)
-        if (solution.isNotEmpty()) {
-            entries.swap(solution[0].src, solution[0].dst)
-            return solution[0]
-        }
-        return null
-    }
-
-    override fun applyMove(move: Move) = entries.swap(move.src, move.dst)
-    override fun isSolved(): Boolean = boardLogic.isSolved(entries, winIdx)
 }
 
 fun makeCheapDisk(spec: String): CheapDisk {

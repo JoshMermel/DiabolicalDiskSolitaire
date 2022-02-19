@@ -10,10 +10,10 @@ import kotlin.math.sqrt
 // 0 1
 // 2 3
 // 4 5
-fun makeRectJBoard(
+fun makeRectBoard(
     context: Context,
     params : RectGameplayParams
-): JBoard {
+): Board {
     val lanes = buildList {
         for (row in (0 until params.numRows)) {
             add((row * params.numCols until (row + 1) * params.numCols).toList())
@@ -46,14 +46,14 @@ fun makeRectJBoard(
     val metadata = mapOf(1 to sideLen * 0.32f, 2 to sideLen * 0.48f, 3 to sideLen * 0.64f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
+    return Board(boardState, boardLogic, layoutParams, params.winIdx)
 }
 
 // TODO(jmerm): can this row/lane computation get factored out into some nice helpers?
-fun makeHexJBoard(
+fun makeHexBoard(
     context: Context,
     params: HexGameplayParams
-): JBoard {
+): Board {
     val lanes = buildList {
         // diagonal down/right
         for (row in (0 until params.numRows)) {
@@ -115,10 +115,10 @@ fun makeHexJBoard(
 
     val metadata = mapOf(1 to 35f, 2 to 75f, 3 to 115f)
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
+    return Board(boardState, boardLogic, layoutParams, params.winIdx)
 }
 
-fun makePentJBoard(context: Context, params : PentGameplayParams): JBoard {
+fun makePentBoard(context: Context, params : PentGameplayParams): Board {
     val lanes = listOf(
         listOf(19, 9, 3, 0),
         listOf(18, 8, 2, 1),
@@ -194,7 +194,7 @@ fun makePentJBoard(context: Context, params : PentGameplayParams): JBoard {
     val metadata = mapOf(1 to 10f, 3 to 36f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
+    return Board(boardState, boardLogic, layoutParams, params.winIdx)
 }
 
 fun fromPolar(r: Double, theta: Double): Pt =
@@ -206,7 +206,7 @@ fun <T> Array<T>.rightCycle(d: Int): Array<T> {
     return sliceArray(size - n until size) + sliceArray(0 until size - n)
 }
 
-fun makeRingJBoard(context: Context, params: RingGameplayParams): JBoard {
+fun makeRingBoard(context: Context, params: RingGameplayParams): Board {
     val lanes = List(params.size) { ((0 until params.size).toList().toTypedArray().rightCycle(it)).toList() }
 
     val innerArc = 200 * Math.PI / params.size
@@ -226,10 +226,10 @@ fun makeRingJBoard(context: Context, params: RingGameplayParams): JBoard {
     val metadata = mapOf(1 to 16f, 2 to 24f, 3 to 32f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
+    return Board(boardState, boardLogic, layoutParams, params.winIdx)
 }
 
-fun makeTriangleJBoard(context: Context, params : TriangleGameplayParams): JBoard {
+fun makeTriangleBoard(context: Context, params : TriangleGameplayParams): Board {
     val lanes = listOf(
         listOf(0, 1, 4, 8),
         listOf(3, 2, 5, 9),
@@ -281,5 +281,5 @@ fun makeTriangleJBoard(context: Context, params : TriangleGameplayParams): JBoar
     val metadata = mapOf(1 to 10f, 2 to 30f, 3 to 50f)
 
     val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return JBoard(boardState, boardLogic, layoutParams, params.winIdx)
+    return Board(boardState, boardLogic, layoutParams, params.winIdx)
 }

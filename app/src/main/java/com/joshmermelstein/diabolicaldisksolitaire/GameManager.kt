@@ -16,11 +16,11 @@ class GameManager(
 ) {
     // TODO(jmerm): should factory methods just take GameplayParams?
     var board = when (params) {
-        is RectGameplayParams -> makeRectJBoard(context, params)
-        is HexGameplayParams -> makeHexJBoard(context, params)
-        is PentGameplayParams -> makePentJBoard(context, params)
-        is RingGameplayParams -> makeRingJBoard(context, params)
-        is TriangleGameplayParams -> makeTriangleJBoard(context, params)
+        is RectGameplayParams -> makeRectBoard(context, params)
+        is HexGameplayParams -> makeHexBoard(context, params)
+        is PentGameplayParams -> makePentBoard(context, params)
+        is RingGameplayParams -> makeRingBoard(context, params)
+        is TriangleGameplayParams -> makeTriangleBoard(context, params)
     }
 
     private var undoStack = Stack<Move>()
@@ -139,11 +139,11 @@ class GameManager(
 
     fun reset() {
         board = when (params) {
-            is RectGameplayParams -> makeRectJBoard(context, params)
-            is HexGameplayParams -> makeHexJBoard(context, params)
-            is PentGameplayParams -> makePentJBoard(context, params)
-            is RingGameplayParams -> makeRingJBoard(context, params)
-            is TriangleGameplayParams -> makeTriangleJBoard(context, params)
+            is RectGameplayParams -> makeRectBoard(context, params)
+            is HexGameplayParams -> makeHexBoard(context, params)
+            is PentGameplayParams -> makePentBoard(context, params)
+            is RingGameplayParams -> makeRingBoard(context, params)
+            is TriangleGameplayParams -> makeTriangleBoard(context, params)
         }
         undoStack.clear()
         redoStack.clear()
