@@ -45,8 +45,8 @@ fun makeRectBoard(
     val sideLen = 100f
     val metadata = mapOf(1 to sideLen * 0.32f, 2 to sideLen * 0.48f, 3 to sideLen * 0.64f)
 
-    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return Board(boardState, boardLogic, layoutParams, params.winIdx)
+    val boardLayout = BoardLayout(cellBounds, metadata, DiskColors(context))
+    return Board(boardState, boardLogic, boardLayout, params.winIdx)
 }
 
 // TODO(jmerm): can this row/lane computation get factored out into some nice helpers?
@@ -114,8 +114,8 @@ fun makeHexBoard(
     }
 
     val metadata = mapOf(1 to 35f, 2 to 75f, 3 to 115f)
-    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return Board(boardState, boardLogic, layoutParams, params.winIdx)
+    val boardLayout = BoardLayout(cellBounds, metadata, DiskColors(context))
+    return Board(boardState, boardLogic, boardLayout, params.winIdx)
 }
 
 fun makePentBoard(context: Context, params : PentGameplayParams): Board {
@@ -193,8 +193,8 @@ fun makePentBoard(context: Context, params : PentGameplayParams): Board {
     val boardLogic = BoardLogic(lanes)
     val metadata = mapOf(1 to 10f, 3 to 36f)
 
-    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return Board(boardState, boardLogic, layoutParams, params.winIdx)
+    val boardLayout = BoardLayout(cellBounds, metadata, DiskColors(context))
+    return Board(boardState, boardLogic, boardLayout, params.winIdx)
 }
 
 fun fromPolar(r: Double, theta: Double): Pt =
@@ -225,8 +225,8 @@ fun makeRingBoard(context: Context, params: RingGameplayParams): Board {
     val boardLogic = BoardLogic(lanes)
     val metadata = mapOf(1 to 16f, 2 to 24f, 3 to 32f)
 
-    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return Board(boardState, boardLogic, layoutParams, params.winIdx)
+    val boardLayout = BoardLayout(cellBounds, metadata, DiskColors(context))
+    return Board(boardState, boardLogic, boardLayout, params.winIdx)
 }
 
 fun makeTriangleBoard(context: Context, params : TriangleGameplayParams): Board {
@@ -280,6 +280,6 @@ fun makeTriangleBoard(context: Context, params : TriangleGameplayParams): Board 
     val boardLogic = BoardLogic(lanes)
     val metadata = mapOf(1 to 10f, 2 to 30f, 3 to 50f)
 
-    val layoutParams = CheapBoardLayoutParams(cellBounds, metadata, DiskColors(context))
-    return Board(boardState, boardLogic, layoutParams, params.winIdx)
+    val boardLayout = BoardLayout(cellBounds, metadata, DiskColors(context))
+    return Board(boardState, boardLogic, boardLayout, params.winIdx)
 }

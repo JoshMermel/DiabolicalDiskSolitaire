@@ -7,69 +7,75 @@ import android.graphics.Canvas
 class Board(
     private val entries : MutableList<CheapDisk>,
     private val boardLogic: BoardLogic,
-    private val layoutParams: CheapBoardLayoutParams,
+    private val boardLayout: BoardLayout,
     private val winIdx : Int
 ) {
-
     private lateinit var scaler: MeshScaler
+
+    // Updates how we translate between virtual coordinates and screen coordinates.
     fun updateBounds(bounds: Bounds) {
         scaler = MeshScaler(
-            layoutParams.virtualLeft,
-            layoutParams.virtualTop,
-            layoutParams.virtualBottom,
+            boardLayout.virtualLeft,
+            boardLayout.virtualTop,
+            boardLayout.virtualBottom,
             bounds
         )
     }
 
+    // Draws the board to |canvas| such that it fits in |bounds| as well as possible.
     fun drawSelf(canvas: Canvas, bounds: Bounds) {
         if (!::scaler.isInitialized) {
             scaler = MeshScaler(
-                layoutParams.virtualLeft,
-                layoutParams.virtualTop,
-                layoutParams.virtualBottom,
+                boardLayout.virtualLeft,
+                boardLayout.virtualTop,
+                boardLayout.virtualBottom,
                 bounds
             )
         }
-        layoutParams.drawCells(scaler, canvas, entries, winIdx)
-        layoutParams.drawDisks(scaler, canvas, entries)
+        boardLayout.drawCells(scaler, canvas, entries, winIdx)
+        boardLayout.drawDisks(scaler, canvas, entries)
     }
 
     // (height/width) of what sort of rectangle should hold the board.
-    val virtualWidth = layoutParams.virtualWidth
-    val virtualHeight = layoutParams.virtualHeight
+    val virtualWidth = boardLayout.virtualWidth
+    val virtualHeight = boardLayout.virtualHeight
 
+    // Callback for when the user touches the screen.
     fun handleDownInput(absoluteX: Float, absoluteY: Float) {
-        val touchedCell = layoutParams.getTouchedCell(scaler, absoluteX, absoluteY) ?: return
+        val touchedCell = boardLayout.getTouchedCell(scaler, absoluteX, absoluteY) ?: return
         val disk = entries[touchedCell]
         if (disk.size == 0 || disk.isFixed || disk.isVoid) {
             return
         }
-        layoutParams.heldDiskIdx = touchedCell
-        layoutParams.heldDiskPos = Pt(absoluteX, absoluteY)
+        boardLayout.heldDiskIdx = touchedCell
+        boardLayout.heldDiskPos = Pt(absoluteX, absoluteY)
     }
 
+    // Callback for when the user moves their finger after touching the screen.
     fun handleMoveInput(absoluteX: Float, absoluteY: Float) {
-        if (layoutParams.heldDiskIdx != null) {
-            layoutParams.heldDiskPos = Pt(absoluteX, absoluteY)
+        if (boardLayout.heldDiskIdx != null) {
+            boardLayout.heldDiskPos = Pt(absoluteX, absoluteY)
         }
     }
 
+    // Callback for when the user stops touching the screen.
     fun handleUpInput(absoluteX: Float, absoluteY: Float): Move? {
-        val srcIdx: Int = layoutParams.heldDiskIdx ?: return null
-        val dstIdx = layoutParams.getTouchedCell(scaler, absoluteX, absoluteY)
+        val srcIdx: Int = boardLayout.heldDiskIdx ?: return null
+        val dstIdx = boardLayout.getTouchedCell(scaler, absoluteX, absoluteY)
 
         return if (dstIdx == null || !boardLogic.getValidDestinations(entries, srcIdx)
                 .contains(dstIdx)
         ) {
-            layoutParams.snapBack()
+            boardLayout.snapBack()
             null
         } else {
             entries.swap(srcIdx, dstIdx)
-            layoutParams.snapBack()
+            boardLayout.snapBack()
             Move(srcIdx, dstIdx)
         }
     }
 
+    // Uses BFS to solve the board and returns the optimal next move if there is one.
     fun help() : Move? {
         val solution = solve(entries, boardLogic, winIdx)
         if (solution.isNotEmpty()) {
@@ -79,7 +85,10 @@ class Board(
         return null
     }
 
+    // Applies a move to the board.
     fun applyMove(move: Move) = entries.swap(move.src, move.dst)
+
+    // Returns whether the board is currently solved, assuming |winIdx| is the goal spot.
     fun isSolved(): Boolean = boardLogic.isSolved(entries, winIdx)
 }
 

@@ -7,6 +7,8 @@ import android.graphics.drawable.ShapeDrawable
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 
+// TODO(jmerm): make locks draw correctly.
+
 //    private fun drawIcon(
 //        icon: Drawable,
 //        left: Int,
@@ -51,7 +53,6 @@ fun makeCheapDisk(spec: String): CheapDisk {
     return CheapDisk(size, isWin, isFixed, isVoid)
 }
 
-// TODO(jmerm): rename
 typealias DiskMetadata = Map<Int, Float>
 
 open class DiskColors(

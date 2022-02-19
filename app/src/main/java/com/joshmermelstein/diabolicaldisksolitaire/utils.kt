@@ -14,3 +14,5 @@ class Bounds(
         return bottom - top
     }
 }
+
+data class Move(val src: Int, val dst: Int)
