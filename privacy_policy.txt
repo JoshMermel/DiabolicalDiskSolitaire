@@ -1,0 +1,12 @@
+Title: Privacy policy for Diabolical Disk Solitaire.
+
+For more information, contact joshmermel@gmail.com
+
+Diabolical Disk Solitaire does not collect, share, or retain any user data and
+never will.
+
+Diabolical Disk Solitaire does not not request any user permissions.
+
+Diabolical Disk Solitaire stores a small amount of game data in the player's
+google account so that their completed levels can be transferred from one device
+to another. This save file is only accessible to the user.
