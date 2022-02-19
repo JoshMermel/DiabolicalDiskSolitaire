@@ -4,6 +4,7 @@ void_r2
 void_r3
 void_r4
 void_r5
+void_r6
 void_h1
 void_h2
 void_h3
