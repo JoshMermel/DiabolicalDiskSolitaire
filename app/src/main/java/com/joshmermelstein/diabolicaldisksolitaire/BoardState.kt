@@ -10,40 +10,11 @@ import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.PathShape
 
 data class Pt(val x: Float, val y: Float)
-data class CheapDisk(
-    val size: Int,
-    val isWin: Boolean = false,
-    val isFixed: Boolean = false,
-    val isVoid: Boolean = false
-)
 
 fun MutableList<CheapDisk>.swap(index1: Int, index2: Int) {
     val tmp = this[index1]
     this[index1] = this[index2]
     this[index2] = tmp
-}
-
-fun makeCheapDisk(spec: String): CheapDisk {
-    val parts = spec.split(" ")
-
-    var isWin = false
-    var isFixed = false
-    var isVoid = false
-    var size = 0
-
-    for (part in parts) {
-        when (part) {
-            "F" -> isFixed = true
-            "G" -> isWin = true
-            "V" -> isVoid = true
-            "0" -> size = 0
-            "1" -> size = 1
-            "2" -> size = 2
-            "3" -> size = 3
-        }
-    }
-
-    return CheapDisk(size, isWin, isFixed, isVoid)
 }
 
 // TODO(jmerm): consider adding a kind of "circular lane" logic handling

@@ -21,6 +21,36 @@ import androidx.core.content.res.ResourcesCompat
 //        icon.draw(canvas)
 //    }
 
+data class CheapDisk(
+    val size: Int,
+    val isWin: Boolean = false,
+    val isFixed: Boolean = false,
+    val isVoid: Boolean = false
+)
+
+fun makeCheapDisk(spec: String): CheapDisk {
+    val parts = spec.split(" ")
+
+    var isWin = false
+    var isFixed = false
+    var isVoid = false
+    var size = 0
+
+    for (part in parts) {
+        when (part) {
+            "F" -> isFixed = true
+            "G" -> isWin = true
+            "V" -> isVoid = true
+            "0" -> size = 0
+            "1" -> size = 1
+            "2" -> size = 2
+            "3" -> size = 3
+        }
+    }
+
+    return CheapDisk(size, isWin, isFixed, isVoid)
+}
+
 // TODO(jmerm): rename
 typealias DiskMetadata = Map<Int, Float>
 
