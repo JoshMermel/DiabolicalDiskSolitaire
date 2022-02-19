@@ -14,35 +14,22 @@ fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic, winIdx : Int)
     seen.add(initial)
     q.add(BfsNode(initial, listOf()))
 
-    /*
-    for (i in initial.indices) {
-        val dests = boardLogic.getValidDestinations(initial, i)
-        Log.d("jmerm", "$i, $dests")
-    }
-    return null
-     */
-
     while (q.isNotEmpty()) {
         val next = q.removeFirst()
 
-        for (i in next.entries.indices) {
-            val dests = boardLogic.getValidDestinations(next.entries, i)
-            for (dest in dests) {
-                val candidate = next.entries.toMutableList()
-                val tmp = candidate[i]
-                candidate[i] = candidate[dest]
-                candidate[dest] = tmp
+        for (src in next.entries.indices) {
+            val destinations = boardLogic.getValidDestinations(next.entries, src)
+            for (dst in destinations) {
+                val candidate = next.entries.toMutableList()  // Makes a copy
+                candidate.swap(src, dst)
                 if (boardLogic.isSolved(candidate, winIdx)) {
-                    return next.path.firstOrNull() ?: Move(i, dest)
+                    return next.path.firstOrNull() ?: Move(src, dst)
                 }
                 if (!seen.contains(candidate)) {
                     seen.add(candidate)
-                    q.add(BfsNode(candidate, next.path + Move(i, dest)))
+                    q.add(BfsNode(candidate, next.path + Move(src, dst)))
                 }
             }
-        }
-        if (q.size > 4000) {
-            return null
         }
     }
 
