@@ -63,6 +63,7 @@ fun loadInitialLevel(id: String, context: Context): GameplayParams? {
     }
 }
 
+// TODO(jmerm): methods below should return null instead of crashing on bad input.
 fun loadInitialLevelRect(reader: BufferedReader, id: String): RectGameplayParams? {
     val numRows = reader.readLine().toInt()
     val numCols = reader.readLine().toInt()
