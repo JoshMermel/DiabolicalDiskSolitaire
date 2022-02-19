@@ -3,9 +3,11 @@ package com.joshmermelstein.diabolicaldisksolitaire
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Path
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.PathShape
+import androidx.core.graphics.drawable.DrawableCompat
 
 data class Pt(val x: Float, val y: Float)
 
@@ -38,7 +40,12 @@ class BoardLayout(
         return null
     }
 
-    fun drawCells(scaler: CoordinatesScaler, canvas: Canvas, entries: List<CheapDisk>, winIdx: Int) {
+    fun drawCells(
+        scaler: CoordinatesScaler,
+        canvas: Canvas,
+        entries: List<CheapDisk>,
+        winIdx: Int
+    ) {
         for (i in cells.indices) {
             val disk = entries[i]
             if (!disk.isVoid) {
@@ -47,7 +54,7 @@ class BoardLayout(
         }
     }
 
-    fun drawDisks(scaler: CoordinatesScaler, canvas: Canvas, entries : List<CheapDisk>) {
+    fun drawDisks(scaler: CoordinatesScaler, canvas: Canvas, entries: List<CheapDisk>) {
         for (i in cells.indices) {
             val disk = entries[i]
             if (disk.isVoid) {
@@ -78,8 +85,32 @@ class BoardLayout(
                     radius,
                     color
                 )
+                if (disk.isFixed) {
+                    drawIcon(
+                        diskColors.lock,
+                        scaler.scaleX(cells[i].virtualCenterX) - (radius * 2 / 3),
+                        scaler.scaleY(cells[i].virtualCenterY) - (radius * 2 / 3),
+                        scaler.scaleX(cells[i].virtualCenterX) + (radius * 2 / 3),
+                        scaler.scaleY(cells[i].virtualCenterY) + (radius * 2 / 3),
+                        canvas
+                    )
+                }
             }
         }
+    }
+
+    private fun drawIcon(
+        icon: Drawable,
+        left: Int,
+        top: Int,
+        right: Int,
+        bottom: Int,
+        canvas: Canvas
+    ) {
+        icon.setBounds(left, top, right, bottom)
+        // TODO(jmerm): white color is wrong in dark mode
+        DrawableCompat.setTint(icon.mutate(), Color.WHITE)
+        icon.draw(canvas)
     }
 
     // TODO(jmerm): I think we don't want to be recreating this oval shape every time.

@@ -9,19 +9,6 @@ import androidx.core.content.res.ResourcesCompat
 
 // TODO(jmerm): make locks draw correctly.
 
-//    private fun drawIcon(
-//        icon: Drawable,
-//        left: Int,
-//        top: Int,
-//        right: Int,
-//        bottom: Int,
-//        canvas: Canvas
-//    ) {
-//        icon.setBounds(left, top, right, bottom)
-//        // TODO(jmerm): white color is wrong in dark mode
-//        DrawableCompat.setTint(icon.mutate(), Color.WHITE)
-//        icon.draw(canvas)
-//    }
 
 data class CheapDisk(
     val size: Int,
