@@ -10,11 +10,11 @@ class Board(
     private val boardLayout: BoardLayout,
     private val winIdx : Int
 ) {
-    private lateinit var scaler: MeshScaler
+    private lateinit var scaler: CoordinatesScaler
 
     // Updates how we translate between virtual coordinates and screen coordinates.
     fun updateBounds(bounds: Bounds) {
-        scaler = MeshScaler(
+        scaler = CoordinatesScaler(
             boardLayout.virtualLeft,
             boardLayout.virtualTop,
             boardLayout.virtualBottom,
@@ -25,7 +25,7 @@ class Board(
     // Draws the board to |canvas| such that it fits in |bounds| as well as possible.
     fun drawSelf(canvas: Canvas, bounds: Bounds) {
         if (!::scaler.isInitialized) {
-            scaler = MeshScaler(
+            scaler = CoordinatesScaler(
                 boardLayout.virtualLeft,
                 boardLayout.virtualTop,
                 boardLayout.virtualBottom,

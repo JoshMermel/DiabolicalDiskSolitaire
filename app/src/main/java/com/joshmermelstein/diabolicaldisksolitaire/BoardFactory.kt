@@ -7,9 +7,6 @@ import kotlin.math.sqrt
 
 // Helpers for building meshes of various kinds.
 
-// 0 1
-// 2 3
-// 4 5
 fun makeRectBoard(
     context: Context,
     params : RectGameplayParams

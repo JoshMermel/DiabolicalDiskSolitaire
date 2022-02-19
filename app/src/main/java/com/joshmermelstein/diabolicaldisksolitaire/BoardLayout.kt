@@ -29,7 +29,7 @@ class BoardLayout(
     val virtualHeight = virtualBottom - virtualTop
 
     // Returns the offset of the touched cell if there was one.
-    fun getTouchedCell(scaler: MeshScaler, eventX: Float, eventY: Float): Int? {
+    fun getTouchedCell(scaler: CoordinatesScaler, eventX: Float, eventY: Float): Int? {
         for (i in cells.indices) {
             if (cells[i].containsPoint(scaler.unScaleX(eventX), scaler.unScaleY(eventY))) {
                 return i
@@ -38,7 +38,7 @@ class BoardLayout(
         return null
     }
 
-    fun drawCells(scaler: MeshScaler, canvas: Canvas, entries: List<CheapDisk>, winIdx: Int) {
+    fun drawCells(scaler: CoordinatesScaler, canvas: Canvas, entries: List<CheapDisk>, winIdx: Int) {
         for (i in cells.indices) {
             val disk = entries[i]
             if (!disk.isVoid) {
@@ -47,7 +47,7 @@ class BoardLayout(
         }
     }
 
-    fun drawDisks(scaler: MeshScaler, canvas: Canvas, entries : List<CheapDisk>) {
+    fun drawDisks(scaler: CoordinatesScaler, canvas: Canvas, entries : List<CheapDisk>) {
         for (i in cells.indices) {
             val disk = entries[i]
             if (disk.isVoid) {
@@ -154,7 +154,7 @@ class JCell(private val points: List<Pt>) {
         return result
     }
 
-    fun drawSelf(scaler: MeshScaler, canvas: Canvas, isWin: Boolean) {
+    fun drawSelf(scaler: CoordinatesScaler, canvas: Canvas, isWin: Boolean) {
         val padding = 3
         outline.setBounds(
             scaler.scaleX(virtualLeft) + padding,

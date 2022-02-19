@@ -1,6 +1,8 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
-class MeshScaler(
+// Translates between "virtual" coordinates that boards use internally and
+// screen coordinates and back.
+class CoordinatesScaler(
     private val left: Float,
     private val top: Float,
     bottom: Float,
