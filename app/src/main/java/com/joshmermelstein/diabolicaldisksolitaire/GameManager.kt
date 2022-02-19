@@ -148,5 +148,7 @@ class GameManager(
         complete = false
     }
 
+    // TODO(jmerm): help should write to the undo stack.
+    // TODO(jmerm): fix this when the board is already solved.
     fun help() = board.help()
 }
