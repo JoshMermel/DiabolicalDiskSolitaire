@@ -126,21 +126,20 @@ fun makeCheapDisk(spec: String): CheapDisk {
 }
 
 // TODO(jmerm): consider adding a kind of "circular lane" logic handling
-// TODO(jmerm): rename "rows" row "lanes".
-class BoardLogic(rows: List<List<Int>>) {
-    private val numEntries: Int = 1 + rows.maxOf { it.maxOrNull() ?: 0 }
-    private val rays = computeRays(rows)
-    private fun computeRays(rows: List<List<Int>>): List<List<List<Int>>> {
+class BoardLogic(lanes: List<List<Int>>) {
+    private val numEntries: Int = 1 + lanes.maxOf { it.maxOrNull() ?: 0 }
+    private val rays = computeRays(lanes)
+    private fun computeRays(lanes: List<List<Int>>): List<List<List<Int>>> {
         val ret = MutableList<MutableList<List<Int>>>(numEntries) { mutableListOf() }
-        for (row in rows) {
-            for (i in row.indices) {
-                val tmp = row.slice((i + 1 until row.size))
+        for (lane in lanes) {
+            for (i in lane.indices) {
+                val tmp = lane.slice((i + 1 until lane.size))
                 if (tmp.isNotEmpty()) {
-                    ret[row[i]].add(tmp)
+                    ret[lane[i]].add(tmp)
                 }
-                val reverseTmp = row.asReversed().slice(i + 1 until row.size)
+                val reverseTmp = lane.asReversed().slice(i + 1 until lane.size)
                 if (reverseTmp.isNotEmpty()) {
-                    ret[row[row.size - i - 1]].add(reverseTmp)
+                    ret[lane[lane.size - i - 1]].add(reverseTmp)
                 }
             }
         }
