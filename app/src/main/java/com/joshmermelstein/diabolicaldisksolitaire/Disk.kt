@@ -1,13 +1,11 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.DrawableCompat
 
 //    private fun drawIcon(
 //        icon: Drawable,
