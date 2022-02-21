@@ -7,7 +7,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/help"
-        android:title="Help!"
+        android:title="@string/gameplayDropdownHint"
         app:showAsAction="never" />
     <item
         android:id="@+id/toolbar_undo"
