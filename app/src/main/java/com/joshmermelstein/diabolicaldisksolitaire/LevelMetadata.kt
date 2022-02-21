@@ -20,15 +20,14 @@ class MetadataSingleton private constructor(context: Context) {
     init {
         var prevId: String? = null
         for (filename in arrayOf(
-           // "hotspot",
-            "pent",
             "rect",
-            "hex",
             "ring",
+            "hex",
+            "triangle",
+            "pent",
             "void",
             "fixed",
-            "triangle",
-           // "experiments"
+            // "experiments"
         )) {
             val reader =
                 BufferedReader(InputStreamReader(context.assets.open("packs/$filename.txt")))
