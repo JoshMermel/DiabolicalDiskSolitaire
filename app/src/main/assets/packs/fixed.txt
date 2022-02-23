@@ -1,5 +1,9 @@
 Fixed
 fixed_r1
 fixed_r2
+fixed_r3
+fixed_r4
 fixed_h1
 fixed_h2
+fixed_p1
+fixed_p2
