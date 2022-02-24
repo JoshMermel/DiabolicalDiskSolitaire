@@ -11,7 +11,3 @@ tri9
 tri10
 tri11
 tri12
-tri13
-tri14
-tri15
-tri16
