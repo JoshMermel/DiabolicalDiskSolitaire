@@ -7,6 +7,3 @@ rect5
 rect6
 rect7
 rect8
-rect9
-rect10
-linear1

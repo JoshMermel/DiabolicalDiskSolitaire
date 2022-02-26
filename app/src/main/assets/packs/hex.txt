@@ -4,3 +4,6 @@ hex2
 hex3
 hex4
 hex5
+hex6
+hex7
+hex8

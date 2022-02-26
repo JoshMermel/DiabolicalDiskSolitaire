@@ -20,6 +20,9 @@ class MetadataSingleton private constructor(context: Context) {
     init {
         var prevId: String? = null
         for (filename in arrayOf(
+            "linear",
+            "2xn",
+            "3xn",
             "rect",
             "ring",
             "hex",
