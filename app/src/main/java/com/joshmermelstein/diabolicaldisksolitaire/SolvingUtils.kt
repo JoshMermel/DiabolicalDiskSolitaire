@@ -1,5 +1,6 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
+import kotlinx.coroutines.yield
 import java.util.*
 
 data class BfsNode(
@@ -7,7 +8,7 @@ data class BfsNode(
     val path: List<Move>
 )
 
-fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic, winIdx : Int): List<Move> {
+suspend fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic, winIdx : Int): List<Move> {
     if (boardLogic.isSolved(initial, winIdx)) {
         // TODO(jmerm): toast here?
         return listOf()
@@ -20,6 +21,7 @@ fun solve(initial: MutableList<CheapDisk>, boardLogic: BoardLogic, winIdx : Int)
     q.add(BfsNode(initial, listOf()))
 
     while (q.isNotEmpty()) {
+        yield()
         val next = q.removeFirst()
 
         for (src in next.entries.indices) {

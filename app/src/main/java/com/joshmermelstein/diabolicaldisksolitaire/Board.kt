@@ -1,16 +1,23 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
 import android.graphics.Canvas
+import kotlinx.coroutines.*
 
 // TODO(jmerm): figure out why the scaler needs to be lateinit. Can that be fixed?
 
 class Board(
-    private val entries : MutableList<CheapDisk>,
+    private val entries: MutableList<CheapDisk>,
     private val boardLogic: BoardLogic,
     private val boardLayout: BoardLayout,
-    private val winIdx : Int
+    private val winIdx: Int
 ) {
     private lateinit var scaler: CoordinatesScaler
+
+    // TODO(jmerm): it would be cool to cache this when the user makes the first move of it?
+    // TODO(jmerm): we might as well init this from level params, right?
+    private var asyncSolution = GlobalScope.async {
+        solve(entries, boardLogic, winIdx)
+    }
 
     // Updates how we translate between virtual coordinates and screen coordinates.
     fun updateBounds(bounds: Bounds) {
@@ -69,24 +76,34 @@ class Board(
             boardLayout.snapBack()
             null
         } else {
-            entries.swap(srcIdx, dstIdx)
+            applyMove(Move(srcIdx, dstIdx))
             boardLayout.snapBack()
             Move(srcIdx, dstIdx)
         }
     }
 
     // Uses BFS to solve the board and returns the optimal next move if there is one.
-    fun help() : Move? {
-        val solution = solve(entries, boardLogic, winIdx)
-        if (solution.isNotEmpty()) {
-            entries.swap(solution[0].src, solution[0].dst)
-            return solution[0]
+    fun help(): Move? {
+        return runBlocking {
+            val solution = asyncSolution?.await()
+            if (solution != null && solution.isNotEmpty()) {
+                applyMove(solution[0])
+                solution[0]
+            }
+            null
         }
-        return null
     }
 
+
     // Applies a move to the board.
-    fun applyMove(move: Move) = entries.swap(move.src, move.dst)
+    @OptIn(DelicateCoroutinesApi::class)
+    fun applyMove(move: Move) {
+        runBlocking { asyncSolution?.cancelAndJoin() }
+        entries.swap(move.src, move.dst)
+        asyncSolution = GlobalScope.async {
+            solve(entries, boardLogic, winIdx)
+        }
+    }
 
     // Returns whether the board is currently solved, assuming |winIdx| is the goal spot.
     fun isSolved(): Boolean = boardLogic.isSolved(entries, winIdx)
