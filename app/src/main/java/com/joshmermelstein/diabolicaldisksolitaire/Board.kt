@@ -89,8 +89,9 @@ class Board(
             if (solution != null && solution.isNotEmpty()) {
                 applyMove(solution[0])
                 solution[0]
+            } else {
+                null
             }
-            null
         }
     }
 
