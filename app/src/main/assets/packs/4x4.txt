@@ -1,4 +1,4 @@
-Rect
+4x4
 RECT
 4
 4
