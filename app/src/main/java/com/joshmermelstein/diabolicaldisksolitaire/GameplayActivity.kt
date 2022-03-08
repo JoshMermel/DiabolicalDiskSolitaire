@@ -61,8 +61,16 @@ class GameplayActivity : AppCompatActivity() {
                 gameManager.reset()
                 true
             }
-            R.id.help -> {
-                gameManager.help()
+            R.id.small_hint -> {
+                gameManager.smallHint()
+                true
+            }
+            R.id.medium_hint -> {
+                gameManager.mediumHint()
+                true
+            }
+            R.id.large_hint -> {
+                gameManager.largeHint()
                 true
             }
             R.id.toolbar_undo -> {

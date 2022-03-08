@@ -82,14 +82,12 @@ class Board(
         }
     }
 
+
     // Uses BFS to solve the board and returns the optimal next move if there is one.
-    fun help(): Move? {
+    fun help(): List<Move>? {
         return runBlocking {
-            val solution = asyncSolution?.await()
-            if (solution != null && solution.isNotEmpty()) {
-                applyMove(solution[0])
-                solution[0]
-            } else {
+            val solution = asyncSolution.await()
+            solution.ifEmpty {
                 null
             }
         }
@@ -99,7 +97,7 @@ class Board(
     // Applies a move to the board.
     @OptIn(DelicateCoroutinesApi::class)
     fun applyMove(move: Move) {
-        runBlocking { asyncSolution?.cancelAndJoin() }
+        runBlocking { asyncSolution.cancelAndJoin() }
         entries.swap(move.src, move.dst)
         asyncSolution = GlobalScope.async {
             solve(entries, boardLogic, winIdx)

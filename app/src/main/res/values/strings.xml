@@ -9,5 +9,7 @@
     <string name="levelSelectDropdownResetAll">Reset all levels</string>
 
     <string name="gameplayDropdownResetLevel">Reset Level</string>
-    <string name="gameplayDropdownHint">Hint</string>
+    <string name="gameplayDropdownSmallHint">Small Hint</string>
+    <string name="gameplayDropdownMediumHint">Medium Hint</string>
+    <string name="gameplayDropdownLargeHint">Large Hint</string>
 </resources>

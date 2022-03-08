@@ -6,8 +6,16 @@
         android:title="@string/gameplayDropdownResetLevel"
         app:showAsAction="never" />
     <item
-        android:id="@+id/help"
-        android:title="@string/gameplayDropdownHint"
+        android:id="@+id/small_hint"
+        android:title="@string/gameplayDropdownSmallHint"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/medium_hint"
+        android:title="@string/gameplayDropdownMediumHint"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/large_hint"
+        android:title="@string/gameplayDropdownLargeHint"
         app:showAsAction="never" />
     <item
         android:id="@+id/toolbar_undo"

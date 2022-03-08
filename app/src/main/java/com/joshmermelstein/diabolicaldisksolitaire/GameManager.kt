@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Canvas
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
 
@@ -70,6 +71,7 @@ class GameManager(
     private fun handleMove(move: Move) {
         undoStack.add(move)
         numMoves++
+        redoStack.clear()
         updateButtons()
     }
 
@@ -151,5 +153,34 @@ class GameManager(
         complete = false
     }
 
-    fun help() = board.help()?.let { handleMove(it) }
+    fun smallHint() {
+        val solution = board.help()
+        if (solution == null) {
+            Toast.makeText(context, "Broken level :(", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "${solution.size} moves required", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun mediumHint()  {
+        val solution = board.help()
+        if (solution == null) {
+            Toast.makeText(context, "Broken level :(", Toast.LENGTH_SHORT).show()
+        } else {
+            board.applyMove(solution[0])
+            handleMove(solution[0])
+        }
+    }
+
+    fun largeHint()  {
+        val solution = board.help()
+        if (solution == null) {
+            Toast.makeText(context, "Broken level :(", Toast.LENGTH_SHORT).show()
+        } else {
+            redoStack.clear()
+            redoStack.addAll(solution.reversed())
+            updateButtons()
+            Toast.makeText(context, "Press redo to see a solution", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
