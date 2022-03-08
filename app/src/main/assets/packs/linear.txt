@@ -1,11 +1,12 @@
 Linear
-linear1
-linear2
-linear3
-linear4
-linear5
-linear6
-linear7
-linear8
-linear9
-linear10
+RECT
+8
+1
+0,0,0,1,1,0,0,G 3
+1,0,1,G 3,0,0,0,1
+3,1,G 3,0,0,0,1,1
+3,0,2,1,2,0,1,G 3
+2,2,2,1,0,G 3,1,2
+0,0,0,3,1,3,1,G 3
+3,1,0,0,3,0,1,G 3
+2,1,0,3,0,2,1,G 3

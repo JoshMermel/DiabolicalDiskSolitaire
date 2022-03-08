@@ -24,12 +24,9 @@ class GameplayActivity : AppCompatActivity() {
 
         // The normal way of creating a level - looking up its params based on an id
         this.id = intent.getStringExtra("id") ?: return
-        val params = loadInitialLevel(id, this)
-        if (params == null) {
-            finish()
-        } else {
-            createFromParams(params)
-        }
+        val levelData = MetadataSingleton.getInstance(this).getLevelData(id) ?: return
+        val params = levelData.contents
+        createFromParams(params)
     }
 
     // Finishes initializing the gameplay activity based on a gameplay params
