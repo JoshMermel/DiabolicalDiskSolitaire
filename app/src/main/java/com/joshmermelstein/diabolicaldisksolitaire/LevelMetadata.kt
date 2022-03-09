@@ -23,7 +23,7 @@ class MetadataSingleton private constructor(context: Context) {
         for (filename in arrayOf(
             "linear",
             "ring12",
-            "2x8",
+            "2x6",
             "3x4",
             "4x4",
             "hex",
