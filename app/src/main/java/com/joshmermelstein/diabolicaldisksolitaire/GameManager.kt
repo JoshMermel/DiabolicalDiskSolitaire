@@ -1,7 +1,9 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.view.View
 import android.widget.Button
@@ -108,10 +110,21 @@ class GameManager(
         return "TODO(jmerm)"
     }
 
+    // Highscores for each level are stored in shared preferences.
     // Displays a dialog when the user wins.
     private fun winDialog() {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.win_popup)
+
+        val highscores: SharedPreferences =
+            context.getSharedPreferences("highscores", Context.MODE_PRIVATE)
+        val oldHighscore = highscores.getInt(params.id, Int.MAX_VALUE)
+        if (numMoves < oldHighscore) {
+            with(highscores.edit()) {
+                putInt(params.id, numMoves)
+                commit()
+            }
+        }
 
         dialog.findViewById<Button>(R.id.menu).setOnClickListener {
             dialog.dismiss()
@@ -162,7 +175,7 @@ class GameManager(
         }
     }
 
-    fun mediumHint()  {
+    fun mediumHint() {
         val solution = board.help()
         if (solution == null) {
             Toast.makeText(context, "Broken level :(", Toast.LENGTH_SHORT).show()
@@ -172,7 +185,7 @@ class GameManager(
         }
     }
 
-    fun largeHint()  {
+    fun largeHint() {
         val solution = board.help()
         if (solution == null) {
             Toast.makeText(context, "Broken level :(", Toast.LENGTH_SHORT).show()

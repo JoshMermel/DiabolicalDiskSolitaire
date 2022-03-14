@@ -1,6 +1,7 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
 import android.content.Context
+import android.content.SharedPreferences
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -14,7 +15,7 @@ class LevelMetadata(
 // A singleton for holding metadata about levels
 // |packData| for which levels are in packs
 // |levelData| for par and which levels come after each other
-class MetadataSingleton private constructor(context: Context) {
+class MetadataSingleton private constructor(private val context: Context) {
     private val levelData: MutableMap<String, LevelMetadata> = mutableMapOf()
     val packData: MutableMap<String, List<String>> = mutableMapOf()
 
@@ -85,7 +86,13 @@ class MetadataSingleton private constructor(context: Context) {
     fun getNumComplete(packId: String): String {
         val levelIds = packData[packId] ?: return "0 / 0"
 
-        return "0 / ${levelIds.size}"
+        val highscores: SharedPreferences =
+            context.getSharedPreferences("highscores", Context.MODE_PRIVATE)
+        val numComplete = levelIds.map {
+            if (highscores.contains(it)) 1 else 0
+        }.sum()
+
+        return "$numComplete / ${levelIds.size}"
     }
 
     companion object : SingletonHolder<MetadataSingleton, Context>(::MetadataSingleton)

@@ -1,6 +1,8 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
+import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.os.Bundle
 import android.util.TypedValue
@@ -10,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     // Because I'm dumb, I have to redraw the entire UI on reload to pick up new star
@@ -126,6 +129,8 @@ class MainActivity : AppCompatActivity() {
                 1.0f
             )
             btnTag.text = levelData.displayId
+            btnTag.backgroundTintList =
+                ColorStateList.valueOf(buttonColor(bestScore(levelData.canonicalId)))
             btnTag.setOnClickListener {
                 val intent = Intent(this, GameplayActivity::class.java)
                 intent.putExtra("id", id)
@@ -165,6 +170,19 @@ class MainActivity : AppCompatActivity() {
             buttonContainer.visibility = View.GONE
         }
         return buttonContainer
+    }
+
+    private fun bestScore(id: String): Int {
+        val highscores = getSharedPreferences("highscores", Context.MODE_PRIVATE)
+        return highscores.getInt(id, Int.MAX_VALUE)
+    }
+
+    private fun buttonColor(bestScore: Int): Int {
+        return if (bestScore != Int.MAX_VALUE) {
+            ContextCompat.getColor(this, R.color.completed_level)
+        } else {
+            ContextCompat.getColor(this, R.color.incomplete_level)
+        }
     }
 
     // Helper for adding a group of levels to the level select screen.
