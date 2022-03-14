@@ -73,7 +73,7 @@ class MetadataSingleton private constructor(private val context: Context) {
             "PENT" -> PentGameplayParams(id, board, 0)
             "RING" -> RingGameplayParams(id, dim1!!, board, 0)
             "TRIANGLE" -> TriangleGameplayParams(id, board, 0)
-            else -> return null
+            else -> null
         }
     }
 

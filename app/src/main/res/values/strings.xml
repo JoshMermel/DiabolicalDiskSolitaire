@@ -12,4 +12,7 @@
     <string name="gameplayDropdownSmallHint">Small Hint</string>
     <string name="gameplayDropdownMediumHint">Medium Hint</string>
     <string name="gameplayDropdownLargeHint">Large Hint</string>
+
+    <string name="moveCounter">Moves: %1$d</string>
+
 </resources>

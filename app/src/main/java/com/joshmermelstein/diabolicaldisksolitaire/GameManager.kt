@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
@@ -35,6 +36,7 @@ class GameManager(
     init {
         buttonState.undoButtonEnabled = false
         buttonState.redoButtonEnabled = false
+        updateButtons()
     }
 
 
@@ -80,6 +82,8 @@ class GameManager(
     private fun updateButtons() {
         buttonState.undoButtonEnabled = undoStack.isNotEmpty()
         buttonState.redoButtonEnabled = redoStack.isNotEmpty()
+        context.findViewById<TextView>(R.id.gameplay_move_count)?.text =
+            context.getString(R.string.moveCounter, numMoves)
         context.invalidateOptionsMenu()
     }
 
