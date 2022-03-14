@@ -36,7 +36,7 @@ class BoardLogic(lanes: List<List<Int>>) {
         }
         for (dst in ray.drop(1)) {
             if (entries[dst].size == 0) {
-                return if (isValidDest(entries, dst, entries[idx]) && !entries[dst].isVoid) {
+                return if (isValidMove(idx, dst, entries) && !entries[dst].isVoid) {
                     dst
                 } else {
                     null
@@ -46,9 +46,11 @@ class BoardLogic(lanes: List<List<Int>>) {
         return null
     }
 
-    private fun isValidDest(entries: List<CheapDisk>, idx: Int, disk: CheapDisk): Boolean {
-        val maxSize = 4 - disk.size
-        return rays[idx].map { entries[it[0]].size <= maxSize }.all { it }
+    // Returns whether a move from |srcIdx| to |dstIdx| is allowed.
+    private fun isValidMove(srcIdx : Int, dstIdx: Int, entries: List<CheapDisk>): Boolean {
+        val maxSize = 4 - entries[srcIdx].size
+        return rays[dstIdx].map { ray -> ray[0] }.filter { neighbor -> neighbor != srcIdx }
+            .map { neighbor -> entries[neighbor].size <= maxSize }.all { it }
     }
 
     fun getValidDestinations(entries: List<CheapDisk>, idx: Int): List<Int> =
