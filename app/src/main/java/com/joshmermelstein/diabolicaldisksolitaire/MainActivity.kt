@@ -1,5 +1,6 @@
 package com.joshmermelstein.diabolicaldisksolitaire
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     // Because I'm dumb, I have to redraw the entire UI on reload to pick up new star
@@ -60,8 +62,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.resetAll -> {
-                // TODO(jmerm): implement reset all dialog
-                // resetAllDialog()
+                resetAllDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -244,5 +245,43 @@ class MainActivity : AppCompatActivity() {
         val backgroundResource = typedArray.getResourceId(0, 0)
         v.setBackgroundResource(backgroundResource)
         typedArray.recycle()
+    }
+
+    // A dialog to make sure the user really wants to delete all their saved data.
+    private fun resetAllDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Reset")
+            .setMessage("Are you sure? This will reset progress on all levels and reset all stars.")
+            .setPositiveButton("Yes (delete it all)") { _, _ ->
+                clearSharedPreferences()
+                deleteSaves()
+                redrawLevelSelect()
+            }
+            .setNegativeButton("no", null)
+            .setIconAttribute(android.R.attr.alertDialogIcon)
+            .show()
+    }
+
+    // Deletes all shared preferences which is where highscores are stored.
+    private fun clearSharedPreferences() {
+        val dir = this.filesDir.parent ?: return
+        val subdir = File("$dir/shared_prefs/")
+        val children: Array<String> = subdir.list() ?: return
+        for (i in children.indices) {
+            // clear each preference file
+            this.getSharedPreferences(children[i].replace(".xml", ""), Context.MODE_PRIVATE).edit()
+                .clear().apply()
+            //delete the file
+            File(subdir, children[i]).delete()
+        }
+    }
+
+    // Deletes all per-level save files.
+    private fun deleteSaves() {
+        val dir: File = this.filesDir
+        val files: Array<File> = dir.listFiles() ?: return
+        for (file in files) {
+            file.delete()
+        }
     }
 }
