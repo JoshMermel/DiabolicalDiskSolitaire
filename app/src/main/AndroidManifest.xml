@@ -18,11 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GameplayActivity"
-            android:theme="@style/Theme.Gameplay"
+        <activity
+            android:name=".GameplayActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden">
-        </activity>
+            android:theme="@style/Theme.Gameplay" />
+        <activity
+            android:name=".AboutActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.DiabolicalDiskSolitaire.NoActionBar" />
     </application>
 
 </manifest>

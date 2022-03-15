@@ -2,6 +2,10 @@
     <string name="app_name">DiabolicalDiskSolitaire</string>
     <!-- Strings used for fragments for navigation -->
 
+    <string name="aboutGameText"><![CDATA[Diabolical Disk Solitaire is a game by <a href=\'https://joshmermelstein.com\'>Josh Mermelstein</a>]]></string>
+    <string name="githubText"><![CDATA[The source code is available on <a href=\'https://github.com/JoshMermel/DiabolicalDiskSolitaire\'>my Github</a> and is licensed under the GPL v3.0 license]]></string>
+    <string name="openSourceLibrariesText">Click for information about open source libraries used in Diabolical Disk Solitaire.</string>
+
     <string name="gameplayDropdownRedo">Redo</string>
     <string name="gameplayDropdownUndo">Undo</string>
 
